@@ -21,10 +21,10 @@ void	key_right(int keycode, t_for_hook *h)
 	{
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_player,
-			(h->map_h->pos_b[0] + 1) * 32, h->map_h->pos_b[1] * 32);
+			(h->map_h->pos_b[0] + 1) * 158, h->map_h->pos_b[1] * 158);
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_floor,
-			(h->map_h->pos_b[0]) * 32, h->map_h->pos_b[1] * 32);
+			(h->map_h->pos_b[0]) * 158, h->map_h->pos_b[1] * 158);
 		h->map_h->pos_b[0] += 1;
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'C')
 		{
@@ -32,7 +32,7 @@ void	key_right(int keycode, t_for_hook *h)
 			h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] = '0';
 		}
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'E')
-			exit(0);
+			exit_end_game(h);
 		h->map_h->nb_step++;
 		ft_printf("number of steps : %d\n", h->map_h->nb_step);
 	}
@@ -47,10 +47,10 @@ void	key_left(int keycode, t_for_hook *h)
 	{
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_player,
-			(h->map_h->pos_b[0] - 1) * 32, h->map_h->pos_b[1] * 32);
+			(h->map_h->pos_b[0] - 1) * 158, h->map_h->pos_b[1] * 158);
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_floor,
-			(h->map_h->pos_b[0]) * 32, h->map_h->pos_b[1] * 32);
+			(h->map_h->pos_b[0]) * 158, h->map_h->pos_b[1] * 158);
 		h->map_h->pos_b[0] -= 1;
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'C')
 		{
@@ -58,7 +58,7 @@ void	key_left(int keycode, t_for_hook *h)
 			h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] = '0';
 		}
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'E')
-			exit(0);
+			exit_end_game(h);
 		h->map_h->nb_step++;
 		ft_printf("number of steps : %d\n", h->map_h->nb_step);
 	}
@@ -73,10 +73,10 @@ void	key_up(int keycode, t_for_hook *h)
 	{
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_player,
-			h->map_h->pos_b[0] * 32, (h->map_h->pos_b[1] - 1) * 32);
+			h->map_h->pos_b[0] * 158, (h->map_h->pos_b[1] - 1) * 158);
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_floor,
-			(h->map_h->pos_b[0]) * 32, h->map_h->pos_b[1] * 32);
+			(h->map_h->pos_b[0]) * 158, h->map_h->pos_b[1] * 158);
 		h->map_h->pos_b[1] -= 1;
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'C')
 		{
@@ -84,7 +84,7 @@ void	key_up(int keycode, t_for_hook *h)
 			h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] = '0';
 		}
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'E')
-			exit(0);
+			exit_end_game(h);
 		h->map_h->nb_step++;
 		ft_printf("number of steps : %d\n", h->map_h->nb_step);
 	}
@@ -99,10 +99,10 @@ void	key_down(int keycode, t_for_hook *h)
 	{
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_player,
-			h->map_h->pos_b[0] * 32, (h->map_h->pos_b[1] + 1) * 32);
+			h->map_h->pos_b[0] * 158, (h->map_h->pos_b[1] + 1) * 158);
 		mlx_put_image_to_window(h->mlx_h->mlx, h->mlx_h->mlx_win,
 			h->img_h->img_floor,
-			(h->map_h->pos_b[0]) * 32, h->map_h->pos_b[1] * 32);
+			(h->map_h->pos_b[0]) * 158, h->map_h->pos_b[1] * 158);
 		h->map_h->pos_b[1] += 1;
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'C')
 		{
@@ -112,6 +112,6 @@ void	key_down(int keycode, t_for_hook *h)
 		h->map_h->nb_step++;
 		ft_printf("number of steps : %d\n", h->map_h->nb_step);
 		if (h->map_h->map[h->map_h->pos_b[1]][h->map_h->pos_b[0]] == 'E')
-			exit(0);
+			exit_end_game(h);
 	}
 }

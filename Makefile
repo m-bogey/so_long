@@ -1,6 +1,6 @@
 NAME = 	so_long
 
-CFLAGS = -Wall -Wextra  -I$(INCLUDES) -I$(LIBFT_DIR) -I$(MLX_DIR) -g3
+CFLAGS = -Wall -Wextra -Werror -I$(INCLUDES) -I$(LIBFT_DIR) -I$(MLX_DIR) -g3
 
 EXT_FLAGS = -lX11 -lm -lz -lXext
 
@@ -21,11 +21,13 @@ SRC_DIR = srcs
 BUILD_DIR = .build
 
 SRC_FILES = main.c \
+			make_area.c \
 			check_map.c \
-			check_map_utils.c \
+			exit.c \
 			check_path.c \
-			utils_libft.c \
-			key_move.c
+			init_struct.c \
+			key_move.c \
+			display.c
 
 INCLUDES = includes
 

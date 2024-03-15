@@ -17,36 +17,24 @@
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <math.h>
 # include "mlx.h"
 # include "libft.h"
-// # include <sys/mman.h>
-// #include "minilibx-linux/mlx_int.h"
-// #include "minilibx-linux/mlx.h"
 
 typedef struct s_img_game
 {
+	int		width;
+	int		height;
 	void	*img_floor;
 	void	*img_player;
 	void	*img_exit;
 	void	*img_wall;
 	void	*img_col;
-	// int		height;
-	// int		width;
 	char	*path_player;
 	char	*path_floor;
 	char	*path_wall;
 	char	*path_col;
 	char	*path_exit;
 }				t_img_game;
-
-// typedef struct	s_data {
-// 	void	*img;
-// 	char	*addr;
-// 	int		bits_per_pixel;
-// 	int		line_length;
-// 	int		endian;
-// }				t_data;
 
 typedef struct s_map
 {
@@ -72,13 +60,33 @@ typedef struct s_for_hook
 	t_img_game	*img_h;
 }				t_for_hook;
 
-void	check_map(char *map, int fd, t_map *so_long);
-size_t	ft_strlen_c(char *map, char c);
-void	exit_error(int fd, char *str);
-void	check_path(char *buf, t_map *so_long);
-void	key_right(int keycode, t_for_hook *h);
-void	key_left(int keycode, t_for_hook *h);
-void	key_up(int keycode, t_for_hook *h);
-void	key_down(int keycode, t_for_hook *h);
+typedef struct s_content
+{
+	int		c;
+	int		e;
+	int		p;
+}				t_content;
+
+typedef struct s_display
+{
+	int		o;
+	int		i;
+	int		j;
+}				t_display;
+
+void		init_struct(t_map *so_long_map, t_mlx_data *m, t_img_game *img);
+t_for_hook	*init_for_hook(t_map *map, t_img_game *base_img, t_mlx_data *m);
+void		init_area(t_map *so_long_map, char *ar, t_for_hook *h);
+void		init_img_game(t_img_game *img, t_mlx_data *m, t_for_hook *h);
+void		init_dp(t_display *dp);
+void		dp_ut(t_map *map, t_mlx_data *m, t_img_game *img, t_display *dp);
+void		check_map(t_map *map, t_for_hook *h);
+void		exit_error(char *str, t_for_hook *h);
+void		check_path(t_map *map, t_for_hook *h);
+void		key_right(int keycode, t_for_hook *h);
+void		key_left(int keycode, t_for_hook *h);
+void		key_up(int keycode, t_for_hook *h);
+void		key_down(int keycode, t_for_hook *h);
+void		exit_end_game(t_for_hook *h);
 
 #endif 

@@ -1,113 +1,115 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_map.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mbogey <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/15 13:48:24 by mbogey            #+#    #+#             */
+/*   Updated: 2024/03/15 13:48:28 by mbogey           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "so_long.h"
 
-static void		check_dim(char* map, int fd, t_map *so_long);
-static void		check_char(char* map, int fd);
-static void		check_doublon(char *map, int fd, t_map *so_long);
-static void		check_walls(char *map, int fd);
+static void		check_dim(t_map *map, t_for_hook *h);
+static void		check_char(t_map *map, t_for_hook *h);
+static void		check_doublon(t_map *map, t_for_hook *h);
+static void		check_walls(t_map *map, t_for_hook *h);
 
-void	check_map(char *map, int fd, t_map *so_long)
+void	check_map(t_map *map, t_for_hook *h)
 {
-	check_dim(map, fd, so_long);// ve dim rectangulaire
-	check_char(map, fd);//ve 01CEP
-	check_doublon(map, fd, so_long);//ve P = 1; E = 1; C >= 1
-	check_walls(map, fd);//ve si 1 autour
-	//ve chemin valide
-	check_path(map, so_long);
-	
-	printf("\n%s",map);
+	check_dim(map, h);
+	check_char(map, h);
+	check_doublon(map, h);
+	check_walls(map, h);
+	check_path(map, h);
 }
 
-static void	check_dim(char* map, int fd, t_map *so_long)
+static void	check_dim(t_map *map, t_for_hook *h)
 {
-	ssize_t	total;
-	ssize_t	x;
 	ssize_t	y;
-	ssize_t	last_line;
 
-	total = ft_strlen_c(map, '\0') + 1;
-	x = ft_strlen_c(map, '\n') + 1;
-	y = total / x;
-	so_long->x = x - 1;
-	so_long->y = y;
-	//verifier dimension rectangulaire
-	if (total % x != 0)
-		exit_error(fd, "Wrong map size");
-	if (y == x - 1)
-		exit_error(fd, "The map must not be square");
-	y = y - 1;
-	last_line = (x * y) - 1;
-	while (y != 0)
+	y = 0;
+	map->x = ft_strlen(map->area[0]);
+	while (map->area[y])
 	{
-		if(map[last_line] != '\n')
-			exit_error(fd, "Wrong map size");
-		y--;
+		if (map->x != (ssize_t)ft_strlen(map->area[y]))
+			exit_error("Map not be rectangular\n", h);
+		y++;
 	}
 }
 
-static void	check_char(char* map, int fd)
+static void	check_char(t_map *map, t_for_hook *h)
 {
-	size_t	i;
-
-	i = 0;
-	while(map[i])
-	{
-		if (map[i] != '0' && map[i] != '1' && map[i] != 'C'
-				&& map[i] != 'E' && map[i] != 'P' && map[i] != '\n')
-			exit_error(fd, "Bad characters");
-		i++;
-	}
-}
-
-static void	check_doublon(char *map, int fd, t_map *so_long)
-{
-	size_t	i;
-	int		C;
-	int		E;
-	int		P;
-
-	i = 0;
-	C = 0;
-	E = 0;
-	P = 0;
-	so_long->nb_col = 0;
-	while (map[i])
-	{
-		if (map[i] == 'C')
-		{
-			so_long->nb_col++;
-			C++;
-		}
-		if (map[i] == 'E')
-			E++;
-		if (map[i] == 'P')
-			P++;
-		i++;
-	}
-	if (C == 0 || E != 1 || P != 1)
-		exit_error(fd, "Duplicates characters or no collectible");
-}
-
-static void		check_walls(char *map, int fd)
-{
-	size_t	total;
 	size_t	x;
 	size_t	y;
-	size_t	i;
 
-	total = ft_strlen_c(map, '\0') + 1;
-	if (total < 18)
-		exit_error(fd, "The map is too small");
-	x = ft_strlen_c(map, '\n') + 1;
-	y = total / x;
-	i = 0;
-	while (map[i])
+	y = 0;
+	while (map->area[y])
 	{
-		if (map[i] == '\n' && (map[i + 1] != '1' || map[i - 1] != '1'))
-			exit_error(fd, "No closed by walls");
-		if (i <= x - 2 && map[i] != '1')
-			exit_error(fd, "No closed by walls");
-		if ((i >= x * (y - 1)) && map[i] != '1')
-			exit_error(fd, "No closed by walls");
-		i++;
+		x = 0;
+		while (map->area[y][x])
+		{
+			if (map->area[y][x] != '0' && map->area[y][x] != '1'
+				&& map->area[y][x] != 'C' && map->area[y][x] != 'E'
+				&& map->area[y][x] != 'P' && map->area[y][x] != '\n')
+				exit_error("Bad characters", h);
+			if (map->area[y][x] == 'C')
+				map->nb_col++;
+			x++;
+		}
+		y++;
+	}
+}
+
+static void	check_doublon(t_map *map, t_for_hook *h)
+{
+	size_t		x;
+	size_t		y;
+	t_content	co;
+
+	y = 0;
+	co.c = 0;
+	co.e = 0;
+	co.p = 0;
+	while (map->area[y])
+	{
+		x = 0;
+		while (map->area[y][x])
+		{
+			if (map->area[y][x] == 'C')
+				co.c++;
+			if (map->area[y][x] == 'E')
+				co.e++;
+			if (map->area[y][x] == 'P')
+				co.p++;
+			x++;
+		}
+		y++;
+	}
+	if (co.c == 0 || co.e != 1 || co.p != 1)
+		exit_error("Duplicates characters or no C/E/P", h);
+}
+
+static void	check_walls(t_map *map, t_for_hook *h)
+{
+	ssize_t	y;
+	ssize_t	x;
+
+	y = 0;
+	while (map->area[y])
+	{
+		x = 0;
+		while (map->area[y][x])
+		{
+			if ((y == 0 && map->area[y][x] != '1')
+				|| (y == map->y - 1 && map->area[y][x] != '1')
+				|| (x == 0 && map->area[y][x] != '1')
+				|| (x == map->x - 1 && map->area[y][x] != '1'))
+				exit_error("No closed by walls", h);
+			x++;
+		}
+		y++;
 	}
 }
